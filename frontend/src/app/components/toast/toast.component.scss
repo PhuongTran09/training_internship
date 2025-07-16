@@ -1,0 +1,28 @@
+.alert-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+}
+
+.alert-box {
+  background: #fff;
+  border-left: 6px solid #007bff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  min-width: 250px;
+  max-width: 350px;
+
+  .alert-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  .alert-body p {
+    margin: 0.5rem 0 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+}
