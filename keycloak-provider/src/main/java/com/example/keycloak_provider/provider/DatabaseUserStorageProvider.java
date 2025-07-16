@@ -160,7 +160,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
     }
 
     private Connection getConnection() throws SQLException {
-        logger.info("[getConnection] Connecting to DB: {}", jdbcUrl);
+        logger.info("Connecting to DB: {}", jdbcUrl);
         return DriverManager.getConnection(jdbcUrl, dbUser, dbPass);
     }
 
@@ -193,8 +193,6 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
     @Override
     public Stream<UserModel> searchForUserStream(RealmModel realm, Map<String, String> params, Integer firstResult, Integer maxResults) {
         String search = params.getOrDefault("search", "");
-        logger.info("[searchForUserStream] params={} | search='{}'", params, search);
-
         List<UserModel> users = new ArrayList<>();
         String sql = "SELECT username, email, first_name, last_name FROM users WHERE username LIKE ? OR email LIKE ? LIMIT ? OFFSET ?";
 
