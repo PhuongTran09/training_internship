@@ -10,7 +10,7 @@ import org.keycloak.storage.UserStorageProviderFactory;
 
 public class DatabaseUserStorageProviderFactory implements UserStorageProviderFactory<DatabaseUserStorageProvider> {
 
-    public static final String PROVIDER_ID = "db-user-storage-provider";
+    public static final String PROVIDER_ID = "storage-provider";
 
     @Override
     public String getId() {
