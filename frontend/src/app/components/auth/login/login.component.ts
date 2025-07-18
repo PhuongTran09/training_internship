@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../service/auth.service';
 import { catchError } from 'rxjs';
@@ -14,6 +14,7 @@ import { ToastComponent } from "../../toast/toast.component";
     imports: [
         CommonModule,
         ReactiveFormsModule,
+        RouterModule,
         ToastComponent
     ]
 })
@@ -64,6 +65,4 @@ export class LoginComponent {
     togglePasswordVisibility() {
         this.showPassword = !this.showPassword;
     }
-
-
 }

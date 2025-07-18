@@ -65,4 +65,21 @@ export class AuthService {
     private hasToken(): boolean {
         return !!localStorage.getItem('access_token');
     }
+    register(account: {
+        username: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+        password: string;
+    }) {
+        return this.http.post(BASE_URL + '/register', account, {
+            headers: { noauth: 'noauth' },
+        }).pipe(
+            catchError((err) => {
+                const msg = err?.error?.message || 'Đăng ký thất bại!';
+                return throwError(() => new Error(msg));
+            })
+        );
+    }
+
 }
