@@ -1,0 +1,45 @@
+<div class="register-wrapper">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+    <h2 class="form-title">REGISTER</h2>
+
+    <!-- Username -->
+    <div class="form-group" [ngClass]="{ 'has-error': registerForm.get('username')?.touched && registerForm.get('username')?.invalid }">
+      <input id="username" type="text" formControlName="username" placeholder="Username" />
+    </div>
+
+    <!-- Email -->
+    <div class="form-group" [ngClass]="{ 'has-error': registerForm.get('email')?.touched && registerForm.get('email')?.invalid }">
+      <input id="email" type="email" formControlName="email" placeholder="Email" />
+    </div>
+
+    <!-- First Name -->
+    <div class="form-group" [ngClass]="{ 'has-error': registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid }">
+      <input id="firstName" type="text" formControlName="firstName" placeholder="First Name" />
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-group" [ngClass]="{ 'has-error': registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid }">
+      <input id="lastName" type="text" formControlName="lastName" placeholder="Last Name" />
+    </div>
+
+    <!-- Password -->
+    <div class="form-group password-wrapper"
+      [ngClass]="{ 'has-error': registerForm.get('password')?.touched && registerForm.get('password')?.invalid }">
+      <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password"
+        (focus)="passwordFocused = true" (blur)="passwordFocused = false" />
+      <span class="btn-show-pass" *ngIf="passwordFocused || registerForm.get('password')?.value"
+        (click)="togglePasswordVisibility()">
+        <i class="fa" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+      </span>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+
+    <!-- Register link -->
+    <div class="form-links">
+      <p>Have an account? <a routerLink="/login">Login</a></p>
+    </div>
+  </form>
+  <app-toast></app-toast>
+</div>
