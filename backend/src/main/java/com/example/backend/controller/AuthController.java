@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.request.LoginRequest;
 import com.example.backend.dto.request.RegisterRequest;
+import com.example.backend.dto.response.ApiResponse;
 import com.example.backend.dto.response.TokenResponse;
 import com.example.backend.service.auth.AuthService;
 
@@ -37,12 +38,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<ApiResponse<?>> register(@RequestBody @Valid RegisterRequest request) {
         try {
             authService.register(request);
-            return ResponseEntity.ok("Registration successful");
+            return ResponseEntity.ok(ApiResponse.success("Registration successful", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed: " + e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Registration failed: " + e.getMessage()));
         }
     }
+
 }
