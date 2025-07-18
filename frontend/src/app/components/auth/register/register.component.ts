@@ -37,29 +37,18 @@ export class RegisterComponent {
         });
     }
 
-    onSubmit(): void {
-        if (this.registerForm.invalid || this.isSubmitting) return;
-
-        this.isSubmitting = true;
-        this.showRegisterError = false;
-
-        this.authService.register(this.registerForm.value)
-            .pipe(
-                catchError((err) => {
-                    this.showRegisterError = true;
-                    this.isSubmitting = false;
-                    return [];
-                })
-            )
-            .subscribe({
-                next: () => {
-                    window.alert('Đăng ký thành công!');
-                    this.router.navigate(['/login']);
-                },
-                complete: () => {
-                    this.isSubmitting = false;
-                }
-            });
+    onSubmit() {
+        if (this.registerForm.invalid) return;
+        const username = this.registerForm.value.username;
+        this.authService.register(this.registerForm.value).subscribe({
+            next: () => {
+                window.alert('Đăng ký thành công! Vui lòng đăng nhập.');
+                this.router.navigate(['/login'], { queryParams: { username } }); // ✅ Chuyển hướng sang login
+            },
+            error: (err) => {
+                window.alert('Đăng ký thất bại: ' + err.message);
+            },
+        });
     }
 
     showPassword = false;
@@ -67,8 +56,5 @@ export class RegisterComponent {
 
     togglePasswordVisibility() {
         this.showPassword = !this.showPassword;
-    }
-    debug() {
-        console.log("CLICKED REGISTER");
     }
 }
