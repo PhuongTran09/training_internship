@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../service/auth.service';
 import { catchError } from 'rxjs';
@@ -14,6 +14,7 @@ import { ToastComponent } from "../../toast/toast.component";
     imports: [
         CommonModule,
         ReactiveFormsModule,
+        RouterModule,
         ToastComponent
     ]
 })
@@ -38,7 +39,7 @@ export class LoginComponent {
 
         this.isSubmitting = true;
         this.showLoginError = false;
-
+   
         this.authService.login(this.loginForm.value)
             .pipe(
                 catchError((err) => {
@@ -56,6 +57,7 @@ export class LoginComponent {
                     this.isSubmitting = false;
                 }
             });
+
     }
 
     showPassword = false;
@@ -64,6 +66,4 @@ export class LoginComponent {
     togglePasswordVisibility() {
         this.showPassword = !this.showPassword;
     }
-
-
 }

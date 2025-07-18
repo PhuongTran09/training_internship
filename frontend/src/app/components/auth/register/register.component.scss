@@ -1,0 +1,157 @@
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  background: #f0f2f5;
+}
+
+.register-form {
+  background: #ffffff;
+  padding: 2rem;
+
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+
+
+  .form-title {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Segoe UI', Verdana, sans-serif;
+    color: #333;
+  }
+
+  .form-group {
+    margin-bottom: 1.2rem;
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input {
+      padding: 0.75rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border 0.2s ease;
+
+
+
+      &:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+    }
+  }
+
+
+  button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .form-links {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    span {
+      margin: 0 0.5rem;
+      color: #888;
+    }
+  }
+
+  input::placeholder {
+    transition: opacity 0.2s ease;
+  }
+
+  input:focus::placeholder {
+    opacity: 0;
+  }
+
+  .password-wrapper {
+    position: relative;
+
+    input {
+      padding-right: 2.5rem;
+    }
+
+    .btn-show-pass {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #999;
+
+      i {
+        font-size: 13px;
+
+        &:hover {
+          color: #0387f2;
+        }
+      }
+    }
+  }
+
+  .field-error {
+    color: #ff4d4f;
+    font-size: 0.875rem;
+    margin-top: 0.4rem;
+    padding-left: 0.5rem;
+    animation: fadeIn 0.2s ease-in-out;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-2px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+
+
+}
