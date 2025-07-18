@@ -22,6 +22,7 @@ import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
+import org.keycloak.storage.user.UserRegistrationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ import com.example.keycloak_provider.dto.UserInfo;
 public class DatabaseUserStorageProvider implements UserStorageProvider,
         UserLookupProvider,
         UserQueryProvider,
+        UserRegistrationProvider,
         CredentialInputValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUserStorageProvider.class);
@@ -107,7 +109,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-  
+
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput input) {
         if (!supportsCredentialType(input.getType())) {
             logger.warn("Unsupported credential type: {}", input.getType());
@@ -186,7 +188,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     @Override
     public Stream<UserModel> getGroupMembersStream(RealmModel realm, GroupModel group, Integer firstResult, Integer maxResults) {
-       
+
         return Stream.empty();
     }
 
@@ -216,6 +218,57 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
             logger.error("Error: {}", e.getMessage(), e);
         }
         return users.stream();
+    }
+
+    @Override
+    public UserModel addUser(RealmModel realm, String username) {
+        logger.info("Attempting to add user with username: {}", username);
+        String sql = "INSERT INTO users (username) VALUES (?)";
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                UserInfo userInfo = new UserInfo(username, null, null, null);
+                logger.info("User '{}' successfully added to DB", username);
+                return new CustomUserAdapter(session, realm, model, userInfo);
+            } else {
+                logger.warn("Failed to insert user '{}' into DB", username);
+            }
+
+        } catch (SQLException e) {
+            logger.error("SQL error while adding user '{}': {}", username, e.getMessage(), e);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean removeUser(RealmModel realmModel, UserModel userModel) {
+        logger.info("Attempting to remove user with ID: {}", userModel.getId());
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            long persistenceId;
+            try {
+                persistenceId = Long.parseLong(StorageId.externalId(userModel.getId()));
+            } catch (NumberFormatException e) {
+                logger.error("Invalid ID format: {}", userModel.getId(), e);
+                return false;
+            }
+
+            stmt.setLong(1, persistenceId);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                logger.info("User successfully removed with ID: {}", userModel.getId());
+                return true;
+            } else {
+                logger.warn("No user found with ID: {} to remove", userModel.getId());
+            }
+        } catch (SQLException e) {
+            logger.error("Error removing user", e);
+        }
+        return false;
     }
 
     @Override
