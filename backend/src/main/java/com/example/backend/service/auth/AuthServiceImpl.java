@@ -2,6 +2,7 @@ package com.example.backend.service.auth;
 
 import java.util.Map;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -15,7 +16,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.backend.dto.request.LoginRequest;
+import com.example.backend.dto.request.RegisterRequest;
 import com.example.backend.dto.response.TokenResponse;
+import com.example.backend.entity.User;
+import com.example.backend.repository.UserRepository;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -31,6 +35,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
+
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+
+    public AuthServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+
+    }
 
     @Override
     public TokenResponse login(LoginRequest request) {
@@ -70,11 +83,24 @@ public class AuthServiceImpl implements AuthService {
                     Long.parseLong(body.get("expires_in").toString())
             );
         } catch (org.springframework.web.client.HttpClientErrorException e) {
-            System.out.println("Status Code: " + e.getStatusCode());
-            System.out.println("Headers: " + e.getResponseHeaders());
-            System.out.println("Response Body: " + e.getResponseBodyAsString());
             throw new RuntimeException("Login failed: " + e.getResponseBodyAsString(), e);
         }
     }
 
+    @Override
+    public User register(RegisterRequest request) {
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username đã tồn tại");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email đã tồn tại");
+        }
+
+        User user = modelMapper.map(request, User.class);
+        userRepository.save(user);
+
+        return user;
+    }
 }
