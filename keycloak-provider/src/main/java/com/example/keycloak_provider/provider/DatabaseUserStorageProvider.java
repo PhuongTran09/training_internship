@@ -65,9 +65,9 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
                 logger.warn("User '{}' not found in database", username);
             }
         } catch (SQLException e) {
-            logger.error(" SQL error while fetching user '{}': {}", username, e.getMessage(), e);
+            logger.error(" SQL error while fetching user '{}': {}", username, e.getMessage());
         } catch (Exception e) {
-            logger.error(" Unexpected error: {}", e.getMessage(), e);
+            logger.error(" Unexpected error: {}", e.getMessage());
         }
         return null;
     }
@@ -85,9 +85,9 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
                 logger.warn(" Email '{}' not found", email);
             }
         } catch (SQLException e) {
-            logger.error("SQL error while fetching email '{}': {}", email, e.getMessage(), e);
+            logger.error("SQL error while fetching email '{}': {}", email, e.getMessage());
         } catch (Exception e) {
-            logger.error("Unexpected error: {}", e.getMessage(), e);
+            logger.error("Unexpected error: {}", e.getMessage());
         }
         return null;
     }
@@ -103,7 +103,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
             }
             return user;
         } catch (Exception e) {
-            logger.error("Unexpected error: {}", e.getMessage(), e);
+            logger.error("Unexpected error: {}", e.getMessage());
             return null;
         }
     }
@@ -121,7 +121,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
             logger.info("Password validation for user {}: {}", user.getUsername(), isValid);
             return isValid;
         } catch (SQLException e) {
-            logger.error("Error validating password: {}", e.getMessage(), e);
+            logger.error("Error validating password: {}", e.getMessage());
             return false;
         }
     }
@@ -215,7 +215,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
                 users.add(new CustomUserAdapter(session, realm, model, userInfo));
             }
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage(), e);
+            logger.error("Error: {}", e.getMessage());
         }
         return users.stream();
     }
