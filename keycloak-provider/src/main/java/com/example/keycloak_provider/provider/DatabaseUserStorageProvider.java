@@ -59,7 +59,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
             UserInfo user = getUserInfo(
                     "SELECT username, email, first_name, last_name FROM users WHERE username = ?", username);
             if (user != null) {
-                logger.info("Found user '{}'", username);
+
                 return new CustomUserAdapter(session, realm, model, user);
             } else {
                 logger.warn("User '{}' not found in database", username);

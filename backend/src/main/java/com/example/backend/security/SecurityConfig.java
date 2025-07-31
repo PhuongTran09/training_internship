@@ -23,8 +23,9 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
             "api/auth/**",
-            "/public/**",
-             "/api/reports/export"
+             "/api/reports/export",
+             "/api/process/**",
+            "/camunda/**"
     };
 
     @Bean

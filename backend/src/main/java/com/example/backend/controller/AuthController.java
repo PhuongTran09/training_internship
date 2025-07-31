@@ -13,7 +13,7 @@ import com.example.backend.dto.request.LoginRequest;
 import com.example.backend.dto.request.RegisterRequest;
 import com.example.backend.dto.response.ApiResponse;
 import com.example.backend.dto.response.TokenResponse;
-import com.example.backend.service.auth.AuthService;
+import com.example.backend.service.auth.IAuthService;
 
 import jakarta.validation.Valid;
 
@@ -22,9 +22,9 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    private final AuthService authService;
+    private final IAuthService authService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(IAuthService authService) {
         this.authService = authService;
     }
 
