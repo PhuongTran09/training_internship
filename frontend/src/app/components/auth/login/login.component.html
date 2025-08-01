@@ -4,17 +4,17 @@
 
     <!-- Username -->
     <div class="form-group"
-      [ngClass]="{ 'has-error': loginForm.get('username')?.touched && loginForm.get('username')?.invalid }">
-      <input id="username" type="text" formControlName="username" placeholder="Username" />
+         [ngClass]="{ 'has-error': loginForm.get('username')?.touched && loginForm.get('username')?.invalid }">
+      <input id="username" type="text" formControlName="username" placeholder="Username"/>
     </div>
 
     <!-- Password -->
     <div class="form-group password-wrapper"
-      [ngClass]="{ 'has-error': loginForm.get('password')?.touched && loginForm.get('password')?.invalid }">
+         [ngClass]="{ 'has-error': loginForm.get('password')?.touched && loginForm.get('password')?.invalid }">
       <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password"
-        (focus)="passwordFocused = true" (blur)="passwordFocused = false" />
+             (focus)="passwordFocused = true" (blur)="passwordFocused = false"/>
       <span class="btn-show-pass" *ngIf="passwordFocused || loginForm.get('password')?.value"
-        (click)="togglePasswordVisibility()">
+            (click)="togglePasswordVisibility()">
         <i class="fa" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
       </span>
     </div>
@@ -26,7 +26,7 @@
 
     <!-- Register link -->
     <div class="form-links">
-      <p>Don't have an account? <a routerLink="/register">Register</a> </p>
+      <p>Don't have an account? <a routerLink="/register">Register</a></p>
     </div>
   </form>
   <app-toast></app-toast>

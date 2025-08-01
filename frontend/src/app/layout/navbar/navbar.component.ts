@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../service/auth.service';
-import { CommonModule } from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {Router, RouterModule} from '@angular/router';
+import {AuthService} from '../../service/auth.service';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +14,8 @@ export class HeaderComponent implements OnInit {
   isLoggedIn = false;
   username = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+  }
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe((loggedIn) => {
@@ -28,8 +29,6 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  goToLogin(): void {
-    this.router.navigate(['/login']);
-  }
+
 }
 

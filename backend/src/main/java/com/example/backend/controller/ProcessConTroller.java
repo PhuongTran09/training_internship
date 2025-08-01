@@ -1,13 +1,14 @@
 package com.example.backend.controller;
 
+import com.example.backend.service.task.IProcessService;
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
+
 import java.util.*;
 
 @RestController
@@ -17,48 +18,53 @@ public class ProcessConTroller {
     private static final Logger log = LoggerFactory.getLogger(ProcessConTroller.class);
 
     private final RuntimeService runtimeService;
-    private final TaskService taskService;
+    private final IProcessService processService;
 
-    public ProcessConTroller(RuntimeService runtimeService, TaskService taskService) {
+    public ProcessConTroller(RuntimeService runtimeService, IProcessService processService) {
         this.runtimeService = runtimeService;
-        this.taskService = taskService;
+        this.processService = processService;
     }
 
     @GetMapping("/start")
-    public ResponseEntity<String> startProcess(
+    public ResponseEntity<Map<String, Object>> startProcess(
             @RequestParam(required = false) String businessKey,
             @RequestParam String username,
             @RequestParam String password
     ) {
+        Map<String, Object> response = new HashMap<>();
         try {
-            if (username == null || username.trim().isEmpty() ||
-                    password == null || password.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("Thiếu username hoặc password");
+            if (username.isBlank() || password.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Thiếu username hoặc password"));
             }
 
-            if (businessKey == null || businessKey.trim().isEmpty()) {
+            if (businessKey == null || businessKey.isBlank()) {
                 businessKey = UUID.randomUUID().toString();
             }
 
-            Map<String, Object> variables = new HashMap<>();
-            variables.put("username", username);
-            variables.put("password", password);
+            Map<String, Object> variables = Map.of(
+                    "username", username,
+                    "password", password
+            );
 
             runtimeService.startProcessInstanceByKey("Process_Login", businessKey, variables);
             log.info("Started Process_Login with businessKey={}, username={}", businessKey, username);
-            return ResponseEntity.ok("Process started with key: " + businessKey);
+
+            response.put("message", "Process started");
+            response.put("businessKey", businessKey);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             log.error("Error starting process", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi hệ thống. Vui lòng thử lại sau.");
+                    .body(Map.of("error", "Lỗi hệ thống. Vui lòng thử lại sau."));
         }
     }
+
 
     @GetMapping("/tasks")
     public ResponseEntity<List<Map<String, Object>>> getTasks() {
         try {
-            List<Task> tasks = taskService.createTaskQuery().active().list();
+            List<Task> tasks = processService.getAllTasks();
             List<Map<String, Object>> result = new ArrayList<>();
 
             for (Task task : tasks) {
@@ -67,7 +73,7 @@ public class ProcessConTroller {
                 taskInfo.put("name", task.getName());
                 taskInfo.put("assignee", task.getAssignee());
                 taskInfo.put("processInstanceId", task.getProcessInstanceId());
-                taskInfo.put("variables", taskService.getVariables(task.getId()));
+                taskInfo.put("variables", processService.getVariables(task.getId()));
                 result.add(taskInfo);
             }
 
@@ -75,24 +81,38 @@ public class ProcessConTroller {
 
         } catch (Exception e) {
             log.error("Error fetching tasks", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
 
     @PostMapping("/tasks/{taskId}/complete")
-    public ResponseEntity<String> completeTask(
+    public ResponseEntity<Map<String, Object>> completeTask(
             @PathVariable String taskId,
             @RequestBody Map<String, Object> variables
     ) {
         try {
-            taskService.complete(taskId, new HashMap<>(variables));
+            processService.completeTask(taskId, variables);
             log.info("Task {} completed with variables: {}", taskId, variables);
-            return ResponseEntity.ok("Task completed: " + taskId);
+
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Task completed successfully",
+                    "taskId", taskId
+            ));
+
         } catch (Exception e) {
             log.error("Error completing task {}", taskId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi xử lý tác vụ. Vui lòng thử lại.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Failed to complete task",
+                    "error", e.getMessage()
+            ));
         }
     }
+//    @PostMapping("/tasks/{taskId}/claim")
+//    public ResponseEntity<?> claimTask(@PathVariable String taskId) {
+//        String result = processService.claimTask(taskId);
+//        return ResponseEntity.ok(Collections.singletonMap("message", result));
+//    }
 }
+

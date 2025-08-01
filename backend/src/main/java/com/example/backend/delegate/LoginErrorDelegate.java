@@ -24,7 +24,6 @@ public class LoginErrorDelegate implements JavaDelegate {
             execution.setVariable("errorMessage", "Tài khoản hoặc mật khẩu không đúng");
         }
 
-        // Lấy username để log chi tiết hơn (nếu có)
         String username = (String) execution.getVariable("username");
 
         if (retryCount < 3) {

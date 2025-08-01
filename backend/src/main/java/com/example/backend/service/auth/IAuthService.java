@@ -7,6 +7,7 @@ import com.example.backend.entity.User;
 
 public interface IAuthService {
     TokenResponse login(LoginRequest request);
+
     User register(RegisterRequest registerUser);
 
 }

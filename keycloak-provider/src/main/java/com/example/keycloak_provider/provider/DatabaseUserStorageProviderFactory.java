@@ -43,7 +43,7 @@ public class DatabaseUserStorageProviderFactory implements UserStorageProviderFa
         dbUrl.setName("dbUrl");
         dbUrl.setLabel("Database JDBC URL");
         dbUrl.setType(ProviderConfigProperty.STRING_TYPE);
-       
+
 
         ProviderConfigProperty dbUser = new ProviderConfigProperty();
         dbUser.setName("dbUser");

@@ -27,7 +27,7 @@ public class CustomAuthoritiesConverter implements Converter<Jwt, Collection<Gra
         if (rolesObject instanceof List<?> rolesList) {
             return rolesList.stream()
                     .filter(Objects::nonNull)
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toString()))
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .collect(Collectors.toSet());
         }
 

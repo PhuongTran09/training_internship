@@ -1,0 +1,36 @@
+<div class="container">
+
+  <!-- Đăng nhập -->
+  <div class="form-task">
+    <h2>Tạo task đăng nhập</h2>
+    <label>Thêm tên user</label>
+    <input [(ngModel)]="username" placeholder="Username" class="input"/>
+
+    <label>Thêm password</label>
+    <input [(ngModel)]="password" placeholder="Password" type="password" class="input"/>
+
+    <div class="bottom-form">
+      <button (click)="create()" class="btn btn-create">Tạo task</button>
+      <div class="bottom-form">
+        <div *ngIf="taskMessage" class="error-msg">{{ taskMessage }}</div>
+      </div>
+
+    </div>
+
+
+    <div *ngFor="let task of tasks" class="task-item">
+      <div class="task-info">
+        <p class="task-name">{{ task.name }}</p>
+        <p>ID: {{ task.id }}</p>
+        <p>BusinessKey: {{ task.processInstanceId }}</p>
+        <p *ngIf="task.variables?.username">Username: {{ task.variables.username }}</p>
+        <p *ngIf="task.variables?.password">Password: {{ task.variables.password }}</p>
+      </div>
+      <p *ngIf="isLoading">Đang tải task...</p>
+      <button (click)="completeTask(task.id)" class="btn btn-complete">
+        Hoàn thành
+      </button>
+    </div>
+  </div>
+
+</div>

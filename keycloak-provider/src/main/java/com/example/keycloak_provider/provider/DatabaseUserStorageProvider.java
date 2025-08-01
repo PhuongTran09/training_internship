@@ -54,7 +54,6 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
-        logger.info(" Searching for user '{}'", username);
         try {
             UserInfo user = getUserInfo(
                     "SELECT username, email, first_name, last_name FROM users WHERE username = ?", username);
@@ -74,7 +73,6 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserByEmail(RealmModel realm, String email) {
-        logger.info("Searching for email '{}'", email);
         try {
             UserInfo user = getUserInfo(
                     "SELECT username, email, first_name, last_name FROM users WHERE email = ?", email);
@@ -95,7 +93,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
     @Override
     public UserModel getUserById(RealmModel realm, String id) {
         String username = StorageId.externalId(id);
-        logger.info("Looking for ID '{}', extracted username '{}'", id, username);
+
         try {
             UserModel user = getUserByUsername(realm, username);
             if (user == null) {
@@ -112,7 +110,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput input) {
         if (!supportsCredentialType(input.getType())) {
-            logger.warn("Unsupported credential type: {}", input.getType());
+
             return false;
         }
         try {
@@ -129,7 +127,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
     private boolean validatePassword(String username, String rawPassword) throws SQLException {
         String sql = "SELECT password FROM users WHERE username = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            logger.info("Query: {} | Param: {}", sql, username);
+
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -146,7 +144,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     private UserInfo getUserInfo(String query, String param) throws SQLException {
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            logger.info("Query: {} | Param: {}", query, param);
+
             stmt.setString(1, param);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -222,7 +220,7 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel addUser(RealmModel realm, String username) {
-        logger.info("Attempting to add user with username: {}", username);
+
         String sql = "INSERT INTO users (username) VALUES (?)";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -246,7 +244,6 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
 
     @Override
     public boolean removeUser(RealmModel realmModel, UserModel userModel) {
-        logger.info("Attempting to remove user with ID: {}", userModel.getId());
         String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             long persistenceId;

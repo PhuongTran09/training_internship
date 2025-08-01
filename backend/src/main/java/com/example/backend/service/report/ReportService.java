@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.service.report;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

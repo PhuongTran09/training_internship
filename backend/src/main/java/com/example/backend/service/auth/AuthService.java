@@ -69,7 +69,7 @@ public class AuthService implements IAuthService {
                     HttpMethod.POST,
                     entity,
                     new ParameterizedTypeReference<>() {
-            }
+                    }
             );
 
             Map<String, Object> body = response.getBody();
