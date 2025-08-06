@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "api/auth/**",
+            "/api/auth/**",
             "/api/reports/export",
             "/api/process/**",
             "/camunda/**"
@@ -57,7 +57,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200", "http://localhost:8080")
+                        .allowedOriginPatterns("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

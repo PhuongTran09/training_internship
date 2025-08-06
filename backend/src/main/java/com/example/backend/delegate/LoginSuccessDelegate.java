@@ -18,6 +18,12 @@ public class LoginSuccessDelegate implements JavaDelegate {
         String username = (String) execution.getVariable("username");
 
         log.info("User '{}' đăng nhập thành công.", username);
+        log.debug("AccessToken: {}", accessToken);
+        log.debug("RefreshToken: {}", refreshToken);
+
+        // Nếu cần truyền token sang bước khác:
+        execution.setVariable("jwtAccess", accessToken);
+        execution.setVariable("jwtRefresh", refreshToken);
 
         execution.setVariable("success", "LOGIN_SUCCESS");
     }

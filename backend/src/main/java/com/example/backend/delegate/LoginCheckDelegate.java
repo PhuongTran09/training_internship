@@ -14,7 +14,6 @@ import com.example.backend.service.auth.AuthService;
 public class LoginCheckDelegate implements JavaDelegate {
 
     private static final Logger log = LoggerFactory.getLogger(LoginCheckDelegate.class);
-
     private final AuthService authService;
 
     public LoginCheckDelegate(AuthService authService) {
@@ -27,10 +26,10 @@ public class LoginCheckDelegate implements JavaDelegate {
         String password = (String) execution.getVariable("password");
 
         if (username == null || password == null) {
-            throw new IllegalArgumentException("Thiếu thông tin đăng nhập");
+            throw new IllegalArgumentException("❌ Thiếu thông tin đăng nhập");
         }
 
-        log.info("Thực hiện kiểm tra đăng nhập cho user: {}", username);
+        log.info("🔐 Kiểm tra đăng nhập cho user: {}", username);
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername(username);
@@ -39,16 +38,28 @@ public class LoginCheckDelegate implements JavaDelegate {
         try {
             TokenResponse token = authService.login(loginRequest);
 
-            execution.setVariable("loginSuccess", true);
+            // Đăng nhập thành công
+            execution.setVariable("loginSuccess", Boolean.TRUE); // 🔑 Phải là Boolean TRUE
             execution.setVariable("accessToken", token.getAccessToken());
             execution.setVariable("refreshToken", token.getRefreshToken());
+            execution.setVariable("attemptCount", 0); // Reset nếu thành công
 
             log.info("Đăng nhập thành công cho user: {}", username);
+
         } catch (RuntimeException e) {
-            execution.setVariable("loginSuccess", false);
+            // Đăng nhập thất bại
+            execution.setVariable("loginSuccess", Boolean.FALSE); // 🔑 Phải là Boolean FALSE
+
+            Integer currentAttempt = (Integer) execution.getVariable("attemptCount");
+            if (currentAttempt == null) currentAttempt = 0;
+            execution.setVariable("attemptCount", currentAttempt + 1);
             execution.setVariable("errorMessage", e.getMessage());
 
-            log.error("Đăng nhập thất bại: {}", e.getMessage());
+            log.warn(" Đăng nhập thất bại cho user {}: {}", username, e.getMessage());
         }
+
+        // Log biến cuối cùng để debug BPMN flow
+        log.info("🔎 loginSuccess: {}", execution.getVariable("loginSuccess"));
+        log.info("🔎 attemptCount: {}", execution.getVariable("attemptCount"));
     }
 }

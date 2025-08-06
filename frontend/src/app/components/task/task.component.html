@@ -27,9 +27,8 @@
         <p *ngIf="task.variables?.password">Password: {{ task.variables.password }}</p>
       </div>
       <p *ngIf="isLoading">Đang tải task...</p>
-      <button (click)="completeTask(task.id)" class="btn btn-complete">
-        Hoàn thành
-      </button>
+      <button (click)="completeTask(task)">Hoàn thành</button>
+      
     </div>
   </div>
 

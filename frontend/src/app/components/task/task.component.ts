@@ -4,7 +4,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {TaskService} from "../../service/task.service";
 
-
 @Component({
   selector: 'login-task',
   templateUrl: './task.component.html',
@@ -17,66 +16,76 @@ import {TaskService} from "../../service/task.service";
     FormsModule,
   ]
 })
-export class LoginTaskComponent implements OnInit{
+export class LoginTaskComponent implements OnInit {
   username: string = '';
   password: string = '';
   taskMessage: string = '';
   tasks: any[] = [];
-  userName: string = '';
+  selectedTask: any = null;
+  isLoading: boolean = false;
 
-  constructor(private taskService: TaskService) {
-  }
+  constructor(private taskService: TaskService) {}
+
   ngOnInit(): void {
     this.loadTasks();
   }
+
   create(): void {
     this.taskMessage = '';
-    this.userName = '';
+    this.selectedTask = null;
 
     this.taskService.startLoginProcess(this.username, this.password).subscribe({
       next: (res: any) => {
-        console.log( res);
-
-        this.taskMessage = "Tạo task thành công";
+        this.taskMessage = "✅ Tạo task thành công";
         this.loadTasks();
       },
       error: (err) => {
         console.error(err);
-        this.taskMessage = "Tạo thất bại";
+        this.taskMessage = "❌ Tạo thất bại";
       }
     });
   }
 
+loadTasks(): void {
+  this.taskService.getCurrentTasks().subscribe({
+    next: (data) => {
+      this.tasks = data;
+      if (data.length === 0) {
+        this.taskMessage = "Không còn task nào.";
+      } else {
+        this.taskMessage = `📋 Có ${data.length} task cần xử lý.`;
+      }
+    },
+    error: (err) => {
+      console.error("Lỗi khi load task:", err);
+      this.taskMessage = "Không thể tải task.";
+    }
+  });
+}
 
-  isLoading = false;
+  completeTask(task: any): void {
 
-  loadTasks(): void {
-    this.isLoading = true;
-    this.taskService.getCurrentTasks().subscribe({
-      next: (data) => {
-        this.tasks = data;
-        this.isLoading = false;
+    const confirmed = confirm("Bạn có chắc chắn muốn hoàn thành task này không?");
+    if (!confirmed) return;
+    this.taskService.completeTask(task.id, {
+      username: this.username,
+      password: this.password
+    }).subscribe({
+      next: (res: any) => {
+        if (res.loginSuccess) {
+          this.loadTasks();
+        } else {
+          this.loadTasks();
+        }
       },
       error: (err) => {
-        console.error(err);
-        this.taskMessage = "Lỗi load task";
-        this.isLoading = false;
+        console.error("Lỗi khi complete task:", err);
+        this.taskMessage = "Lỗi khi hoàn thành task.";
       }
     });
+
   }
 
-  completeTask(taskId: string): void {
-    this.taskService.completeTask(taskId, {}).subscribe({
-      next: () => {
-        this.loadTasks();
-      },
-      error: (err) => {
-        console.error(err)
-        this.taskMessage = "Lỗi Complete"
-      }
-
-    });
-  }
 
 
 }

@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: training
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  webapp:
+    build: .
+    container_name: webapp
+    ports:
+      - "80:80"       # Angular
+      - "8081:8081"   # Spring Boot
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-net
+      - keycloak-net
+
+networks:
+  app-net: {}
+  keycloak-net:
+

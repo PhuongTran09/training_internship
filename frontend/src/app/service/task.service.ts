@@ -1,7 +1,8 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {apiUrl} from "../utils/api.config";
+import { AuthService } from './auth.service';
 
 const BASE_URL = apiUrl.BASE_URL + '/process';
 
@@ -10,8 +11,10 @@ const BASE_URL = apiUrl.BASE_URL + '/process';
 })
 export class TaskService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(
+  private http: HttpClient,
+  private authService: AuthService
+) {}
 
   startLoginProcess(username: string, password: string): Observable<any> {
     const params = new HttpParams()
@@ -21,11 +24,20 @@ export class TaskService {
     return this.http.get(`${BASE_URL}/start`, {params});
   }
 
-  completeTask(taskId: string, variables: any): Observable<any> {
-    return this.http.post(`${BASE_URL}/tasks/${taskId}/complete`, variables);
-  }
+completeTask(taskId: string, variables: any = {}): Observable<any> {
+  const token = this.authService.getToken(); 
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
 
+  return this.http.post(
+    `${BASE_URL}/tasks/${taskId}/complete`,
+    variables,
+    { headers }
+  );
+}
   getCurrentTasks(): Observable<any> {
     return this.http.get(`${BASE_URL}/tasks`);
   }
+
 }

@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.dto.request.LoginRequest;
 import com.example.backend.dto.request.RegisterRequest;
@@ -34,11 +31,10 @@ public class AuthController {
         try {
             TokenResponse token = authService.login(request);
             return ResponseEntity.ok(token);
-
         } catch (Exception e) {
             logger.error("Login failed for user {}: {}", request.getUsername(), e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Login failed: " + e.getMessage());
+                    .body("Login failed");
         }
     }
 
@@ -48,10 +44,10 @@ public class AuthController {
             authService.register(request);
             return ResponseEntity.ok(ApiResponse.success("Registration successful", null));
         } catch (Exception e) {
+            logger.error("Registration failed for user {}: {}", request.getUsername(), e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.error("Registration failed: " + e.getMessage()));
+                    .body(ApiResponse.error("Registration failed"));
         }
     }
-
 }
