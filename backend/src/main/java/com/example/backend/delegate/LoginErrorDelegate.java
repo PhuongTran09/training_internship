@@ -28,7 +28,7 @@ public class LoginErrorDelegate implements JavaDelegate {
 
         if (retryCount < 3) {
             execution.setVariable("tryAgain", true);
-            log.warn("User '{}' đăng nhập sai lần thứ {} → Cho phép thử lại.", username, retryCount);
+            log.warn("User '{}' đăng nhập sai lần thứ {}. Cho phép thử lại.", username, retryCount);
         } else {
             execution.setVariable("tryAgain", false);
             log.error("User '{}' đã vượt quá số lần đăng nhập cho phép.", username);
