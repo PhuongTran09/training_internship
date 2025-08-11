@@ -1,4 +1,4 @@
-package com.example.keycloak_provider.adapter;
+package com.keycloak_provider.adapter;
 
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.LegacyUserCredentialManager;
@@ -8,7 +8,7 @@ import org.keycloak.models.SubjectCredentialManager;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapter;
 
-import com.example.keycloak_provider.dto.UserInfo;
+import com.keycloak_provider.dto.UserInfo;
 
 public class CustomUserAdapter extends AbstractUserAdapter {
 

@@ -1,4 +1,4 @@
-package com.example.keycloak_provider.dto;
+package com.keycloak_provider.dto;
 
 public class UserInfo {
 

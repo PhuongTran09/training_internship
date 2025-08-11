@@ -1,7 +1,11 @@
 package com.example.backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class LoginRequest {
 
     @NotBlank(message = "Không được để trống")
@@ -9,19 +13,4 @@ public class LoginRequest {
     @NotBlank(message = "Không được để trống")
     private String password;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

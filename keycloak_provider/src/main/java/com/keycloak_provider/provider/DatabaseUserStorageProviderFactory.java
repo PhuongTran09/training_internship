@@ -1,4 +1,4 @@
-package com.example.keycloak_provider.provider;
+package com.keycloak_provider.provider;
 
 import java.util.List;
 

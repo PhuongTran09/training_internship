@@ -21,6 +21,8 @@ import com.example.backend.dto.response.TokenResponse;
 import com.example.backend.entity.User;
 import com.example.backend.repository.UserRepository;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 @Service
 public class AuthService implements IAuthService {
 
@@ -98,8 +100,9 @@ public class AuthService implements IAuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
         }
-
+        String hashPassword = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
         User user = modelMapper.map(request, User.class);
+        user.setPassword(hashPassword);
         userRepository.save(user);
 
         return user;

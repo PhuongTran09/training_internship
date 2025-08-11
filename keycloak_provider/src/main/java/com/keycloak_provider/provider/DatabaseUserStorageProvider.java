@@ -1,4 +1,4 @@
-package com.example.keycloak_provider.provider;
+package com.keycloak_provider.provider;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,9 +25,10 @@ import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.user.UserRegistrationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.mindrot.jbcrypt.BCrypt;
 
-import com.example.keycloak_provider.adapter.CustomUserAdapter;
-import com.example.keycloak_provider.dto.UserInfo;
+import com.keycloak_provider.adapter.CustomUserAdapter;
+import com.keycloak_provider.dto.UserInfo;
 
 public class DatabaseUserStorageProvider implements UserStorageProvider,
         UserLookupProvider,
@@ -51,6 +52,8 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
         this.dbUser = model.get("dbUser");
         this.dbPass = model.get("dbPassword");
     }
+
+
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
@@ -131,8 +134,8 @@ public class DatabaseUserStorageProvider implements UserStorageProvider,
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                String dbPassword = rs.getString("password");
-                boolean result = dbPassword.equals(rawPassword);
+                String hashedPasswordFromDb = rs.getString("password");
+                boolean result = BCrypt.checkpw(rawPassword, hashedPasswordFromDb);
                 logger.info("Password match for user {}: {}", username, result);
                 return result;
             } else {

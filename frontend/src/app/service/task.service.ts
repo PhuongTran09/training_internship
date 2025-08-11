@@ -24,20 +24,15 @@ export class TaskService {
     return this.http.get(`${BASE_URL}/start`, {params});
   }
 
-completeTask(taskId: string, variables: any = {}): Observable<any> {
-  const token = this.authService.getToken(); 
-  const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
-
-  return this.http.post(
-    `${BASE_URL}/tasks/${taskId}/complete`,
-    variables,
-    { headers }
-  );
-}
   getCurrentTasks(): Observable<any> {
     return this.http.get(`${BASE_URL}/tasks`);
   }
+
+  completeTask(taskId: string, variables: any = {}): Observable<any> {
+    return this.http.post(`${BASE_URL}/tasks/${taskId}/complete`, variables);
+  }
+
+
+
 
 }
